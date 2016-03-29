@@ -3,12 +3,21 @@
   "version": "0.1.0",
   "description": "Use HTML like markup to create stylized text in react-native.",
   "scripts": {
-    "start": "react-native start"
+    "test": "babel-node test.js",
+    "test:watch": "watch 'npm test' ."
   },
   "dependencies": {
     "parse5": "^2.1.5"
   },
   "devDependencies": {
-    "react-native": ">= 0.22"
-  }
+    "babel-cli": "^6.6.5",
+    "babel-preset-react-native": "^1.5.3",
+    "enzyme": "^2.2.0",
+    "react": "^0.14.8",
+    "react-native": ">= 0.22",
+    "react-native-mock": "0.0.7",
+    "tape": "^4.5.1",
+    "watch": "^0.17.1"
+  },
+  "license": "MIT"
 }
