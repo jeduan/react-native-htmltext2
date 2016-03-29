@@ -1,6 +1,6 @@
 {
   "name": "react-native-htmltext2",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Use HTML like markup to create stylized text in react-native.",
   "scripts": {
     "start": "react-native start"
