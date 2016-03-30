@@ -11,13 +11,19 @@
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
+    "babel-core": "^6.7.4",
     "babel-preset-react-native": "^1.5.3",
     "enzyme": "^2.2.0",
+    "faucet": "0.0.1",
     "react": "^0.14.8",
-    "react-native": ">= 0.22",
-    "react-native-mock": "0.0.7",
+    "react-addons-test-utils": "^0.14.8",
+    "react-dom": "^0.14.8",
+    "react-native": "^0.22.2",
     "tape": "^4.5.1",
     "watch": "^0.17.1"
+  },
+  "peerDependencies": {
+    "react-native": ">= 0.22"
   },
   "license": "MIT"
 }
