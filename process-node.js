@@ -10,32 +10,35 @@ function styleForTag (tagName) {
   return style
 }
 
-function isText (tagName) : Boolean {
-  return tagName === '#text'
+function isText (node) : Boolean {
+  return node && node.nodeName === '#text'
 }
 
-function isBlockElement (tagName) : Boolean {
-  return BLOCK_ELEMENTS.includes(tagName)
+function isBlockElement (node) : Boolean {
+  return node && BLOCK_ELEMENTS.includes(node.nodeName)
 }
 
-function isInlineElement (tagName) : Boolean {
-  return INLINE_ELEMENTS.includes(tagName)
+function isInlineElement (node) : Boolean {
+  return node && INLINE_ELEMENTS.includes(node.nodeName)
 }
 
 export default function processNode (node, parentKey) {
-  if (isText(node.nodeName)) {
+  if (isText(node)) {
+    console.info('rendering text', node.value)
     return processTextNode(node, parentKey)
   }
 
-  if (isInlineElement(node.nodeName)) {
+  if (isInlineElement(node)) {
+    console.info('rendering inline element %s', node.nodeName)
     return processInlineNode(node, parentKey)
   }
 
-  if (isBlockElement(node.nodeName)) {
+  if (isBlockElement(node)) {
+    console.info('rendering block element %s', node.nodeName)
     return processBlockNode(node, parentKey)
   }
 
-  console.warn(`unsupported node: ${node.nodeName}`)
+  console.warn(`unsupported node: ${JSON.stringify(node)}`)
   return null
 }
 
@@ -47,9 +50,10 @@ function processTextNode (node, parentKey) {
 function processInlineNode (node, parentKey) {
   let key = `${parentKey}_${node.nodeName}`
   var unsupportedElements : Array = node.childNodes.filter(
-    (node) => !(isInlineElement(node.nodeName) && isText(node.nodeName))
+    (node) => !(isInlineElement(node) || isText(node))
   )
   if (unsupportedElements.length) {
+    console.log(unsupportedElements)
     unsupportedElements.forEach(
       (child) => {
         console.error(`Inline element ${node.nodeName} can only have inline children, ${child} is invalid!`)
@@ -58,7 +62,7 @@ function processInlineNode (node, parentKey) {
   }
 
   var children = node.childNodes.filter(
-    (node) => isInlineElement(node.nodeName) && isText(node.nodeName)
+    (node) => isInlineElement(node) || isText(node)
   ).map(
     (node, index) => processNode(node, `${key}_${index}`)
   )
@@ -72,11 +76,11 @@ function processBlockNode (node, parentKey) {
 
   node.childNodes.forEach((childNode, index) => {
     var child = processNode(childNode, `${key}_${index}`)
-    if (isInlineElement(childNode.nodeName) || isText(childNode.nodeName)) {
+    if (isInlineElement(childNode) || isText(childNode)) {
       lastInlineNodes.push(child)
-    } else if (isBlockElement(childNode.nodeName)) {
+    } else if (isBlockElement(childNode)) {
       if (lastInlineNodes.length > 0) {
-        children.push(<Text key={`${key}_${index}_inline`}>{lastInlineNodes}</Text>)
+        children.push(lastInlineNodes)
         lastInlineNodes = []
       }
       children.push(child)
@@ -84,11 +88,11 @@ function processBlockNode (node, parentKey) {
   })
 
   if (lastInlineNodes.length > 0) {
-    children.push((<Text key={`${key}_last_inline`}>{lastInlineNodes}</Text>))
+    children.push(lastInlineNodes)
   }
 
   return <View key={key} style={styleForTag(node.nodeName)}>
-  {children}
+    {children}
   </View>
 }
 
